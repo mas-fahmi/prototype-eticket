@@ -10,9 +10,6 @@ app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     response(200, "api ready to use", "ready", res)
-
-    
-    console.log(id_ticket);
 });
 
 app.get('path', (req, res) => {
