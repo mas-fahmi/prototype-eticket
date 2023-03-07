@@ -45,15 +45,14 @@ app.post('/postOrder', (req, res) => {
         }
         return result;
     }
-    var output = makeid(8);
 
-    const {id_ticket = output, nik, full_name, address, fest_name, payments} = req.body
+    const {id_ticket = makeid(8), nik, full_name, address, fest_name, payments} = req.body
 
     const sql = `INSERT INTO order_ticket (id_ticket, nik, full_name, address, fest_name, 
         payments) VALUES ('${id_ticket}', ${nik}, '${full_name}', '${address}', '${fest_name}', '${payments}')`;
 
     con.query(sql, (err, fields) => {
-        if (err) throw err
+        if (err) response(500, "Invalid", "Error", res)
         if (fields?.affectedRows){
             const data = {
                 isSuccess: fields.affectedRows,
