@@ -3,13 +3,27 @@ const app = express();
 const port = 3001;
 const bodyParser = require("body-parser");
 const con = require("./connection");
-const response = require("./response")
-
+const response = require("./response");
 
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     response(200, "api ready to use", "ready", res)
+    // function makeid(length) {
+    //     let result = '';
+    //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    //     const charactersLength = characters.length;
+    //     let counter = 0;
+    //     while (counter < length) {
+    //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    //     counter += 1;
+    //     }
+    //     return result;
+    // }
+    // const id_ticket = makeid(8);
+    // console.log(id_ticket);
+
+    
 });
 
 app.get('path', (req, res) => {
@@ -22,7 +36,7 @@ app.post('/postOrder', (req, res) => {
     //generate random char for idTicket
     function makeid(length) {
         let result = '';
-        const characters = '0123456789';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
         let counter = 0;
         while (counter < length) {
@@ -31,17 +45,15 @@ app.post('/postOrder', (req, res) => {
         }
         return result;
     }
-    var output = "TC" + makeid(8);
-    const id_ticket = JSON.parse(output);
-    console.log(id_ticket);
+    var output = makeid(8);
 
-    const {nik, full_name, address, fest_name, payments} = req.body
+    const {id_ticket = output, nik, full_name, address, fest_name, payments} = req.body
 
     const sql = `INSERT INTO order_ticket (id_ticket, nik, full_name, address, fest_name, 
-        payments) VALUES (${nik}, '${full_name}', '${address}', '${fest_name}', '${payments}', '${id_ticket}')`
+        payments) VALUES ('${id_ticket}', ${nik}, '${full_name}', '${address}', '${fest_name}', '${payments}')`;
 
     con.query(sql, (err, fields) => {
-        if (err) response(500, "Invalid", "Error", res)
+        if (err) throw err
         if (fields?.affectedRows){
             const data = {
                 isSuccess: fields.affectedRows,
